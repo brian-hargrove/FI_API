@@ -1,111 +1,73 @@
-let urlDrivers = 'http://ergast.com/api/f1/drivers.json';
-let urlNations = 'http://ergast.com/api/f1/drivers.json';
-// let urlCircuits = 'http://ergast.com/api/f1/circuits.json';
-
-let nationList = document.querySelector('.results');
-// let dropList = document.querySelector('#nation');
-let dropdown = document.getElementById('national-dropdown');
-dropdown.length = 0;
-
-let defaultOption=document.createElement('option');
-defaultOption.text = "Choose Nationality";
-
-//dropdown.addEventListener(defaultOption);
-//dropdown.selectedIndex=0;
-
-// //Search Form
-// const searchTerm = document.querySelector('.search');
-// const searchForm = document.querySelector('form');
-// const submitBtn = document.querySelector('.submit');
-
-// // //Results Navigation
-// // const nextBtn = document.querySelector('.next');
-// // const previousBtn = document.querySelector('.prev');
-// // const nav = document.querySelector('nav');
-
-// // //Results section
+let baseURL = 'http://ergast.com/api/f1/driverStandings/1.json';
+let limit = '?limit=100';
+const searchForm = document.querySelector('form');
+const submitBtn = document.querySelector('.submit');
+// const select = document.querySelector('select');
 // const section = document.querySelector('section');
+let winnerList = document.querySelector('.yearResults');
+// let selectdisplayOpto = document.addEventListener('change',fetchResults);
 
-// // nav.style.display = 'none'; // will hide the next and previous buttons upon starting page before results are shown
-
-// // let pageNumber = 0;
-// // let displayNav = false;
-
-// searchForm.addEventListener('submit', fetchResults); 
-// nextBtn.addEventListener('click', nextPage); 
-// previousBtn.addEventListener('click', previousPage);
+searchForm.addEventListener('submit',fetchResults);
 
 
-
-// fetch(urlCircuits)
-// .then(function(circuits){
-//     return circuits.json();
-// }).then(function(json){
-//     console.log('circuit:',json);
-// })
-
-// function fetchResults(e) {
-//     console.log(e);
-//     e.preventDeFault();
-//     url=urlDrivers + 
-// }
-
-fetch(urlDrivers)
+fetch(baseURL+limit)  
 .then(function(drivers){
     //console.log(drivers);
     return drivers.json();
 }).then(function(json){
     console.log('driver:',json);
-    let nations = json.MRData.DriverTable.Drivers;
-    console.log('n:', nations);
+    displayOptions(json);
+    fetchResults(json);
+   });
 
 
-for (n of nations) {
-    let listItem = document.createElement('p');
-    listItem.innerHTML= n.familyName + " " + n.givenName + "<br>" + n.nationality;
-    nationList.appendChild(listItem);
-}
 
-
-// let seen = {};
-//     jQuery('.nationality').children().each(function(){
-//         var txt=jQuery(this).attr('value');
-//         if(seen[txt]){
-//             jQuery(this).remove();
-//         }else{
-//             seen[txt]=true;
-//         }
-//     });    
-
-
-for (m of nations) {
-    let dropdownList = document.createElement('option');
+function displayOptions(json){
+    let year = json.MRData.StandingsTable.StandingsLists;
+    let dropdown = document.getElementById('dropdown');
+    console.log('n:', year);
     
-    
-        let x = document.getElementById('national-dropdown');
-        console.log("x:",x);
-        
-        let listLength = x.length;
-        for (var i=0;i<listLength;i++){
-            for(var j=0;j<listLength;j++){
-                if(x.options[i].value == x.options[j].value && i !=j){
-                    x.remove(j);
-                    listLength--;
-                }
+    for (let i=0; i<year.length; i++) {
+        option=document.createElement('option');
+        option.innerHTML = year[i].season;
+        option.value = year[i].season;
+        dropdown.add(option);
+    }console.log('morgan',year);
+  return year;
+};
+
+//? if year = info, then show familyName + givenName
+
+function fetchResults(json) {
+    console.log('bench',json);
+    let info = json.MRData.StandingsTable.StandingsLists;
+    console.log('rose',info);
+       
+        for (let j=0; j<info.length; j++) {
+            let standings = info[j].DriverStandings; 
+            console.log(standings);
+            
+            for(let k=0; k<standings.length; k++){
+                console.log(standings[k].Driver.familyName);
+               
+                let heading = document.createElement('p');
+                heading.innerHTML=`${standings[k].Driver.givenName} ${standings[k].Driver.familyName}`;
+                winnerList.appendChild(heading);      
+                
+                
+                
             }
-        }
 
-    dropdownList.innerHTML=m.nationality;
-    dropdownList.value=m.nationality;
-    dropdown.appendChild(dropdownList);
-        console.log('75:', dropdownList);    
-
-    let country=document.getElementById('national-dropdown');
-   
+} 
 
 
-    
-    
 }
-});
+function displayResults(json){
+    let champion = standings;
+    console.log('rijo',champion);
+    if(year==info);{
+       
+    };
+}
 
+// //? 1952 = MRData.StandingsTable.StandingsLists[2].DriverStandings[1].Driver.familyName + givenName
